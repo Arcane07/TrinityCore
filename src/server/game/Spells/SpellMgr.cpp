@@ -3943,6 +3943,14 @@ void SpellMgr::LoadSpellCustomAttr()
             ++count;
             break;
         case 31117: // Unstable Affliction
+        case 12654: // Ignite
+        case 12721: // Deep Wounds
+        case 50536: // Unholy Blight
+        case 51460: // Necrosis
+        case 61840: // Righteous Vengeance
+        case 63468: // Piercing Shots
+        case 70890: // Scourge Strike
+        case 71879: // Necrotic Touch
             // this attribute currently makes spell to ignore resilience and absorbs
             spellInfo->AttributesEx4 &= ~SPELL_ATTR4_FIXED_DAMAGE;
             ++count;
