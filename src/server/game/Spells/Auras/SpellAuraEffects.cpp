@@ -593,6 +593,18 @@ int32 AuraEffect::CalculateAmount(Unit* caster)
             if (GetSpellProto()->SpellFamilyName == SPELLFAMILY_SHAMAN && m_spellProto->SpellFamilyFlags[1] & 0x400)
                 amount = caster->SpellHealingBonus(GetBase()->GetUnitOwner(), GetSpellProto(), amount, SPELL_DIRECT_DAMAGE);
             break;
+        case SPELL_AURA_PERIODIC_LEECH:
+            if (!caster)
+                break;
+            // Siphon Life
+            if (GetSpellProto()->SpellFamilyName == SPELLFAMILY_WARLOCK && m_spellProto->SpellFamilyFlags[1] & 0x1)
+            {
+                if (caster->GetTypeId() == TYPEID_PLAYER)
+                // Glyph of Siphon Life
+                if (AuraEffect* aurEff = caster->GetAuraEffect(56216, EFFECT_0))
+                    AddPctN(amount, aurEff->GetAmount());
+            }
+            break;
         case SPELL_AURA_PERIODIC_DAMAGE:
             if (!caster)
                 break;
