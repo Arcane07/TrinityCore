@@ -646,7 +646,7 @@ void AddCommandScripts()
 {
     AddSC_account_commandscript();
     AddSC_achievement_commandscript();
-    AddSC_arenateam_commandscriot();
+    AddSC_arenateam_commandscript();
     AddSC_debug_commandscript();
     AddSC_event_commandscript();
     AddSC_gm_commandscript();
