@@ -775,14 +775,9 @@ void Spell::EffectDummy(SpellEffIndex effIndex)
                             return;
                     }
 
-                    SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(12721);
-                    uint32 ticks = spellInfo->GetDuration() / spellInfo->Effects[EFFECT_0].Amplitude;
-
                     // Add remaining ticks to damage done
-                    if (AuraEffect const* aurEff = unitTarget->GetAuraEffect(12721, EFFECT_0, m_caster->GetGUID()))
-                        damage += aurEff->GetAmount() * (ticks - aurEff->GetTickNumber());
+                    damage = unitTarget->GetRemainingPeriodicAmount(m_caster, 12721, SPELL_AURA_PERIODIC_DAMAGE); 
 
-                    damage = damage / ticks;
                     m_caster->CastCustomSpell(unitTarget, 12721, &damage, NULL, NULL, true);
                     return;
                 }
