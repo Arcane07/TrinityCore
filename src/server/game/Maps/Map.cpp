@@ -515,7 +515,7 @@ void Map::VisitNearbyCellsOf(WorldObject* obj, TypeContainerVisitor<Trinity::Obj
     }
 }
 
-void Map::Update(const uint32 &t_diff)
+void Map::Update(const uint32 t_diff)
 {
     /// update worldsessions for existing players
     for (m_mapRefIter = m_mapRefManager.begin(); m_mapRefIter != m_mapRefManager.end(); ++m_mapRefIter)
@@ -544,7 +544,7 @@ void Map::Update(const uint32 &t_diff)
     {
         Player* plr = m_mapRefIter->getSource();
 
-        if (!plr->IsInWorld())
+        if (!plr || !plr->IsInWorld())
             continue;
 
         // update players at tick
@@ -559,7 +559,7 @@ void Map::Update(const uint32 &t_diff)
         WorldObject* obj = *m_activeNonPlayersIter;
         ++m_activeNonPlayersIter;
 
-        if (!obj->IsInWorld())
+        if (!obj || !obj->IsInWorld())
             continue;
 
         VisitNearbyCellsOf(obj, grid_object_update, world_object_update);
@@ -593,7 +593,7 @@ struct ResetNotifier
     void Visit(PlayerMapType &m) { resetNotify<Player>(m);}
 };
 
-void Map::ProcessRelocationNotifies(const uint32 & diff)
+void Map::ProcessRelocationNotifies(const uint32 diff)
 {
     for (GridRefManager<NGridType>::iterator i = GridRefManager<NGridType>::begin(); i != GridRefManager<NGridType>::end(); ++i)
     {
@@ -929,7 +929,7 @@ bool Map::CreatureRespawnRelocation(Creature *c)
         return false;
 }
 
-bool Map::UnloadGrid(const uint32 &x, const uint32 &y, bool unloadAll)
+bool Map::UnloadGrid(const uint32 x, const uint32 y, bool unloadAll)
 {
     NGridType *grid = getNGrid(x, y);
     ASSERT(grid != NULL);
@@ -1869,8 +1869,8 @@ void Map::UpdateObjectsVisibilityFor(Player* player, Cell cell, CellPair cellpai
     cell.SetNoCreate();
     TypeContainerVisitor<Trinity::VisibleNotifier, WorldTypeMapContainer > world_notifier(notifier);
     TypeContainerVisitor<Trinity::VisibleNotifier, GridTypeMapContainer  > grid_notifier(notifier);
-    cell.Visit(cellpair, world_notifier, *this, *player, player->GetVisibilityRange());
-    cell.Visit(cellpair, grid_notifier,  *this, *player, player->GetVisibilityRange());
+    cell.Visit(cellpair, world_notifier, *this, *player, player->GetSightRange());
+    cell.Visit(cellpair, grid_notifier,  *this, *player, player->GetSightRange());
 
     // send data
     notifier.SendToSelf();
@@ -2388,7 +2388,7 @@ bool InstanceMap::Add(Player* player)
     return true;
 }
 
-void InstanceMap::Update(const uint32& t_diff)
+void InstanceMap::Update(const uint32 t_diff)
 {
     Map::Update(t_diff);
 
@@ -2489,7 +2489,7 @@ void InstanceMap::PermBindAllPlayers(Player* player)
     InstanceSave *save = sInstanceSaveMgr->GetInstanceSave(GetInstanceId());
     if (!save)
     {
-        sLog->outError("Cannot bind players, no instance save available for map!");
+        sLog->outError("Cannot bind player (GUID: %u, Name: %s), because no instance save is available for instance map (Name: %s, Entry: %u, InstanceId: %u)!", player->GetGUIDLow(), player->GetName(), player->GetMap()->GetMapName(), player->GetMapId(), GetInstanceId());
         return;
     }
 
@@ -2541,8 +2541,8 @@ void InstanceMap::SetResetSchedule(bool on)
         if (InstanceSave *save = sInstanceSaveMgr->GetInstanceSave(GetInstanceId()))
             sInstanceSaveMgr->ScheduleReset(on, save->GetResetTime(), InstanceSaveManager::InstResetEvent(0, GetId(), Difficulty(GetSpawnMode()), GetInstanceId()));
         else
-            sLog->outError("InstanceMap::SetResetSchedule: cannot turn schedule %s, there is no save information for instance (map [id: %u, name: %s], instance id: %u)",
-                on ? "on" : "off", GetId(), GetMapName(), GetInstanceId());
+            sLog->outError("InstanceMap::SetResetSchedule: cannot turn schedule %s, there is no save information for instance (map [id: %u, name: %s], instance id: %u, difficulty: %u)",
+                on ? "on" : "off", GetId(), GetMapName(), GetInstanceId(), Difficulty(GetSpawnMode()));
     }
 }
 

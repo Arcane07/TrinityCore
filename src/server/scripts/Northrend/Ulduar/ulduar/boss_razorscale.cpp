@@ -22,6 +22,7 @@
 #include "ScriptedGossip.h"
 #include "SpellScript.h"
 #include "ulduar.h"
+#include "SpellInfo.h"
 
 enum Says
 {
@@ -300,7 +301,7 @@ class go_razorscale_harpoon : public GameObjectScript
         {
             InstanceScript* instance = go->GetInstanceScript();
             if (ObjectAccessor::GetCreature(*go, instance ? instance->GetData64(BOSS_RAZORSCALE) : 0))
-                go->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_UNK1);
+                go->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
             return false;
         }
 };

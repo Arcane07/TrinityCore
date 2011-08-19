@@ -35,6 +35,7 @@ enum Texts
     SAY_KILL                    = 6,
     SAY_BERSERK                 = 7,
     SAY_DEATH                   = 8,
+    EMOTE_MUTATED_INFECTION     = 9,
 
     EMOTE_PRECIOUS_ZOMBIES      = 0,
 };
@@ -195,7 +196,10 @@ class boss_rotface : public CreatureScript
                             if (!target)
                                 target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0.0f, true, -MUTATED_INFECTION);
                             if (target)
+                            {
                                 me->CastCustomSpell(SPELL_MUTATED_INFECTION, SPELLVALUE_MAX_TARGETS, 1, target, false);
+                                Talk(EMOTE_MUTATED_INFECTION, target->GetGUID());
+                            }
                             events.ScheduleEvent(EVENT_MUTATED_INFECTION, infectionCooldown);
                             break;
                         }
@@ -464,7 +468,7 @@ class spell_rotface_ooze_flood : public SpellScriptLoader
             void Register()
             {
                 OnEffect += SpellEffectFn(spell_rotface_ooze_flood_SpellScript::HandleScript, EFFECT_0, SPELL_EFFECT_SCRIPT_EFFECT);
-                OnUnitTargetSelect += SpellUnitTargetFn(spell_rotface_ooze_flood_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_AREA_ENTRY_SRC);
+                OnUnitTargetSelect += SpellUnitTargetFn(spell_rotface_ooze_flood_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENTRY);
             }
         };
 
@@ -660,12 +664,10 @@ class spell_rotface_unstable_ooze_explosion : public SpellScriptLoader
 
                 uint32 triggered_spell_id = GetSpellInfo()->Effects[effIndex].TriggerSpell;
 
-                float x, y, z;
-                GetTargetUnit()->GetPosition(x, y, z);
                 // let Rotface handle the cast - caster dies before this executes
                 if (InstanceScript* script = GetTargetUnit()->GetInstanceScript())
                     if (Creature* rotface = script->instance->GetCreature(script->GetData64(DATA_ROTFACE)))
-                        rotface->CastSpell(x, y, z, triggered_spell_id, true, NULL, NULL, GetCaster()->GetGUID(), GetTargetUnit());
+                        rotface->CastSpell(GetTargetUnit(), triggered_spell_id, true, NULL, NULL, GetCaster()->GetGUID());
             }
 
             void Register()

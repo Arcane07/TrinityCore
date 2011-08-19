@@ -302,7 +302,7 @@ void WorldSession::HandlePetActionHelper(Unit *pet, uint64 guid1, uint16 spellid
 
             for (uint32 i = 0; i < MAX_SPELL_EFFECTS; ++i)
             {
-                if (spellInfo->Effects[i].TargetA.GetTarget() == TARGET_UNIT_AREA_ENEMY_SRC || spellInfo->Effects[i].TargetA.GetTarget() == TARGET_UNIT_AREA_ENEMY_DST || spellInfo->Effects[i].TargetA.GetTarget() == TARGET_DEST_DYNOBJ_ENEMY)
+                if (spellInfo->Effects[i].TargetA.GetTarget() == TARGET_UNIT_SRC_AREA_ENEMY || spellInfo->Effects[i].TargetA.GetTarget() == TARGET_UNIT_DEST_AREA_ENEMY || spellInfo->Effects[i].TargetA.GetTarget() == TARGET_DEST_DYNOBJ_ENEMY)
                     return;
             }
 
@@ -320,7 +320,7 @@ void WorldSession::HandlePetActionHelper(Unit *pet, uint64 guid1, uint16 spellid
                 pet->GetCharmInfo()->SetIsFollowing(false);
             }
 
-            Spell* spell = new Spell(pet, spellInfo, false);
+            Spell* spell = new Spell(pet, spellInfo, TRIGGERED_NONE);
 
             SpellCastResult result = spell->CheckPetCast(unit_target);
 
@@ -779,7 +779,7 @@ void WorldSession::HandlePetCastSpellOpcode(WorldPacket& recvPacket)
 
     caster->ClearUnitState(UNIT_STAT_FOLLOW);
 
-    Spell* spell = new Spell(caster, spellInfo, false);
+    Spell* spell = new Spell(caster, spellInfo, TRIGGERED_NONE);
     spell->m_cast_count = castCount;                    // probably pending spell cast
     spell->m_targets = targets;
 
