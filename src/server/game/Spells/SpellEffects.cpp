@@ -776,7 +776,7 @@ void Spell::EffectDummy(SpellEffIndex effIndex)
                     }
 
                     // Add remaining ticks to damage done
-                    damage = unitTarget->GetRemainingPeriodicAmount(m_caster, 12721, SPELL_AURA_PERIODIC_DAMAGE); 
+                    damage = unitTarget->GetRemainingPeriodicAmount(m_caster->GetGUID(), 12721, SPELL_AURA_PERIODIC_DAMAGE); 
 
                     m_caster->CastCustomSpell(unitTarget, 12721, &damage, NULL, NULL, true);
                     return;

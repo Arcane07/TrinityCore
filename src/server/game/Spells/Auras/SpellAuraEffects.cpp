@@ -597,7 +597,7 @@ int32 AuraEffect::CalculateAmount(Unit* caster)
             if (!caster)
                 break;
             // Siphon Life
-            if (GetSpellProto()->SpellFamilyName == SPELLFAMILY_WARLOCK && m_spellProto->SpellFamilyFlags[1] & 0x1)
+            if (GetSpellInfo()->SpellFamilyName == SPELLFAMILY_WARLOCK && m_spellInfo->SpellFamilyFlags[1] & 0x1)
             {
                 if (caster->GetTypeId() == TYPEID_PLAYER)
                 // Glyph of Siphon Life

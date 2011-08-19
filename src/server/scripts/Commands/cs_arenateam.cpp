@@ -254,7 +254,7 @@ public:
         }
 
 
-        Player* oldCaptain = sObjectMgr->GetPlayer(at->GetCaptain());
+        Player* oldCaptain = ObjectAccessor::FindPlayer(at->GetCaptain());
         at->SetCaptain(target_guid);
         handler->PSendSysMessage(LANG_AT_CAPTAIN_SUCCESS, at->GetName().c_str(), oldCaptain->GetName(), nameStr);
         return true;
